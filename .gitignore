@@ -8,3 +8,6 @@ config.local.*
 
 # fichiers produits par les tests
 tmp/
+
+# regles d'agent locales
+.agents/
