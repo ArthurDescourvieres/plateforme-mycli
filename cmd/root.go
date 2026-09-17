@@ -8,7 +8,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "mys3",
+	Use:   "mycli",
 	Short: "Command-line client for an S3 server",
 }
 
