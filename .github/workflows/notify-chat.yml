@@ -17,10 +17,20 @@ jobs:
           WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
           KIND: ${{ github.event_name }}
           ACTION: ${{ github.event.action }}
+          MERGED: ${{ github.event.pull_request.merged }}
           TITLE: ${{ github.event.pull_request.title || github.event.issue.title }}
           LINK: ${{ github.event.pull_request.html_url || github.event.issue.html_url }}
           WHO: ${{ github.event.sender.login }}
         run: |
+          case "$KIND-$ACTION-$MERGED" in
+            pull_request-opened-*)     LABEL="PR ouverte" ;;
+            pull_request-closed-true)  LABEL="PR fusionnée" ;;
+            pull_request-closed-*)     LABEL="PR fermée sans fusion" ;;
+            issues-opened-*)           LABEL="Issue ouverte" ;;
+            issues-closed-*)           LABEL="Issue fermée" ;;
+            *)                         LABEL="$KIND $ACTION" ;;
+          esac
+          TEXT=$(printf '%s · %s\npar %s\n%s' "$LABEL" "$TITLE" "$WHO" "$LINK")
           curl -sS -X POST "$WEBHOOK" \
             -H 'Content-Type: application/json' \
-            --data "$(jq -n --arg t "$KIND $ACTION : $TITLE (par $WHO) - $LINK" '{text: $t}')"
+            --data "$(jq -n --arg t "$TEXT" '{text: $t}')"
