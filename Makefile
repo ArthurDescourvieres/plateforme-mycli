@@ -40,7 +40,7 @@ restart: # Redémarre un ou tous les conteneurs proprement (ex: make restart s=a
 # --- DEV ---
 
 mycli:
-	./docker/docker.sh exec go go run . $(s)
+	@set -a; . ./docker/.env; set +a; cd cli && go run . $(s)
 
 # --- TEST ---
 
