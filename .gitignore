@@ -1,5 +1,5 @@
 # binaire compilé
-mys3
+mycli
 *.exe
 
 # configuration locale : contient les clés d'accès
