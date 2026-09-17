@@ -1,6 +1,6 @@
 # binaire compilé
-mys3
-mys3.exe
+mycli
+*.exe
 
 # configuration locale : contient les clés d'accès
 .env
