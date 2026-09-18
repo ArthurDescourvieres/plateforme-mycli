@@ -1,2 +1,5 @@
 docker/.env
 minio_data*
+
+# binaires compilés
+*.exe
