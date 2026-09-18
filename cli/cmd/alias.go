@@ -1,6 +1,9 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/ArthurDescourvieres/plateforme-mycli/cli/cmd/alias"
+	"github.com/spf13/cobra"
+)
 
 var aliasCmd = &cobra.Command{
 	Use:   "alias",
@@ -9,8 +12,9 @@ var aliasCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(aliasCmd)
-
-	aliasCmd.AddCommand(aliasSetCmd)
-	aliasCmd.AddCommand(aliasListCmd)
-	aliasCmd.AddCommand(aliasUseCmd)
+	aliasCmd.AddCommand(
+		alias.SetAlias,
+		alias.ListAliases,
+		alias.UseAlias,
+	)
 }
