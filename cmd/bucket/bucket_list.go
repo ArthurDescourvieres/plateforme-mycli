@@ -10,6 +10,7 @@ import (
 var ListBuckets = &cobra.Command{
 	Use:   "list",
 	Short: "List buckets",
+	Long:  "List all buckets in the S3 storage.",
 	Run: func(cmd *cobra.Command, args []string) {
 		s3.ListBuckets()
 		fmt.Fprintln(cmd.OutOrStdout(), "Bucket listing is not implemented yet")
