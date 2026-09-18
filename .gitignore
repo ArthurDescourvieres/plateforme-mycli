@@ -1,13 +1,2 @@
-# binaire compilé
-mycli
-*.exe
-
-# configuration locale : contient les clés d'accès
-.env
-config.local.*
-
-# fichiers produits par les tests
-tmp/
-
-# regles d'agent locales
-.agents/
+docker/.env
+minio_data*

@@ -1,0 +1,18 @@
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server /data1 --console-address ":9001"
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USER:-admin}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASS:-password}
+    volumes:
+      - ../minio_data:/data1
+    networks:
+      - cli_network
+
+networks:
+  cli_network:
+    driver: bridge

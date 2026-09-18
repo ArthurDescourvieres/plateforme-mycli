@@ -1,0 +1,10 @@
+# binaire compilé
+mys3
+mys3.exe
+
+# configuration locale : contient les clés d'accès
+.env
+config.local.*
+
+# fichiers produits par les tests
+tmp/
