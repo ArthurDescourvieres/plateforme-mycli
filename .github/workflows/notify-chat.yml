@@ -3,6 +3,8 @@ name: notify-chat
 on:
   pull_request:
     types: [opened, closed]
+    paths-ignore:
+      - '**.md'
   issues:
     types: [opened, closed]
 

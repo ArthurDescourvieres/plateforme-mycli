@@ -1,19 +1,4 @@
 services:
-  # go:
-  #   container_name: cli
-  #   build:
-  #     context: ../cli
-  #     dockerfile: Dockerfile
-  #   command: ["tail", "-f", "/dev/null"]
-  #   ports:
-  #     - "${GO_PORT:-50051}:50051"
-  #   working_dir: /app
-  #   volumes:
-  #    - ../cli:/app
-  #    - go-cache:/go/pkg/mod
-  #   networks:
-  #     - cli_network
-
   minio:
     image: quay.io/minio/minio:latest
     command: server /data1 --console-address ":9001"
