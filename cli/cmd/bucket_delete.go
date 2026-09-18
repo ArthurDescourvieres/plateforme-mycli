@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/s3"
 	"github.com/spf13/cobra"
 )
 
@@ -11,9 +10,12 @@ var bucketDeleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a bucket",
 	Long:  "Delete a bucket from the S3 storage. This command requires the name of the bucket to be specified using the --bucket flag.",
-	Run: func(cmd *cobra.Command, args []string) {
-		s3.DeleteBucket(bucketDeleteName)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if err := s3Client.DeleteBucket(cmd.Context(), bucketDeleteName); err != nil {
+			return err
+		}
 		fmt.Fprintf(cmd.OutOrStdout(), "Bucket deleted: %s\n", bucketDeleteName)
+		return nil
 	},
 }
 
