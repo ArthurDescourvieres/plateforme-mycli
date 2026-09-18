@@ -1,4 +1,4 @@
-module github.com/ArthurDescourvieres/plateforme-mycli
+module github.com/ArthurDescourvieres/plateforme-mycli/cli
 
 go 1.26.2
 

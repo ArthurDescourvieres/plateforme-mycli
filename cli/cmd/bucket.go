@@ -1,9 +1,6 @@
 package cmd
 
-import (
-	"github.com/ArthurDescourvieres/plateforme-mycli/cmd/bucket"
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 var bucketCmd = &cobra.Command{
 	Use:   "bucket",
@@ -12,9 +9,4 @@ var bucketCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(bucketCmd)
-	bucketCmd.AddCommand(
-		bucket.CreateBucket,
-		bucket.DeleteBucket,
-		bucket.ListBuckets,
-	)
 }
