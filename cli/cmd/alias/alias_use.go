@@ -1,8 +1,8 @@
-package cmd
+package alias
 
 import "github.com/spf13/cobra"
 
-var aliasUseCmd = &cobra.Command{
+var UseAlias = &cobra.Command{
 	Use:   "use <name>",
 	Short: "Use a connection profile",
 	Long:  "Select a connection profile.",
