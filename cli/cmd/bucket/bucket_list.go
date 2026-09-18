@@ -1,4 +1,4 @@
-package cmd
+package bucket
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var bucketListCmd = &cobra.Command{
+var ListBuckets = &cobra.Command{
 	Use:   "list",
 	Short: "List buckets",
 	Long:  "List all buckets in the S3 storage.",
@@ -15,8 +15,4 @@ var bucketListCmd = &cobra.Command{
 		s3.ListBuckets()
 		fmt.Fprintln(cmd.OutOrStdout(), "Bucket listing is not implemented yet")
 	},
-}
-
-func init() {
-	bucketCmd.AddCommand(bucketListCmd)
 }
