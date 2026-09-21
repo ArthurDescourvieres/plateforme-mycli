@@ -1,6 +1,10 @@
 package config
 
-import "os"
+import (
+	"os"
+
+	"github.com/joho/godotenv"
+)
 
 type Config struct {
 	URL       string
@@ -10,6 +14,12 @@ type Config struct {
 }
 
 func Load() Config {
+	for _, path := range []string{"../docker/.env", "docker/.env"} {
+		if err := godotenv.Load(path); err == nil {
+			break
+		}
+	}
+
 	return Config{
 		URL:       os.Getenv("MINIO_ENDPOINT"),
 		AccessKey: os.Getenv("MINIO_USER"),
