@@ -7,21 +7,14 @@ import (
 )
 
 var DeleteBucket = &cobra.Command{
-	Use:   "delete",
+	Use:   "delete <bucket>",
 	Short: "Delete a bucket",
-	Long:  "Delete a bucket from the S3 storage. This command requires the name of the bucket to be specified using the --bucket flag.",
+	Long:  "Delete a bucket from the S3 storage.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := s3Client.DeleteBucket(cmd.Context(), bucketDeleteName); err != nil {
+		if err := s3Client.DeleteBucket(cmd.Context(), args[0]); err != nil {
 			return err
 		}
-		fmt.Fprintf(cmd.OutOrStdout(), "Bucket deleted: %s\n", bucketDeleteName)
+		fmt.Fprintf(cmd.OutOrStdout(), "Bucket deleted: %s\n", args[0])
 		return nil
 	},
-}
-
-var bucketDeleteName string
-
-func init() {
-	DeleteBucket.Flags().StringVarP(&bucketDeleteName, "bucket", "b", "", "Name of the bucket")
-	_ = DeleteBucket.MarkFlagRequired("bucket")
 }
