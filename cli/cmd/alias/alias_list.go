@@ -1,8 +1,8 @@
-package cmd
+package alias
 
 import "github.com/spf13/cobra"
 
-var aliasListCmd = &cobra.Command{
+var ListAliases = &cobra.Command{
 	Use:   "list",
 	Short: "List connection profiles",
 	Long:  "List connection profiles and their endpoints.",

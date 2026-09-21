@@ -1,4 +1,4 @@
-package cmd
+package bucket
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var bucketCreateCmd = &cobra.Command{
+var CreateBucket = &cobra.Command{
 	Use:   "create <bucket>",
 	Short: "Create a bucket",
 	Long:  "Create a new bucket in the S3 storage.",
@@ -18,8 +18,4 @@ var bucketCreateCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "Bucket created: %s\n", args[0])
 		return nil
 	},
-}
-
-func init() {
-	bucketCmd.AddCommand(bucketCreateCmd)
 }

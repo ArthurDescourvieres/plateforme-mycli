@@ -1,4 +1,4 @@
-package cmd
+package bucket
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var bucketDeleteCmd = &cobra.Command{
+var DeleteBucket = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a bucket",
 	Long:  "Delete a bucket from the S3 storage. This command requires the name of the bucket to be specified using the --bucket flag.",
@@ -22,7 +22,6 @@ var bucketDeleteCmd = &cobra.Command{
 var bucketDeleteName string
 
 func init() {
-	bucketDeleteCmd.Flags().StringVarP(&bucketDeleteName, "bucket", "b", "", "Name of the bucket")
-	_ = bucketDeleteCmd.MarkFlagRequired("bucket")
-	bucketCmd.AddCommand(bucketDeleteCmd)
+	DeleteBucket.Flags().StringVarP(&bucketDeleteName, "bucket", "b", "", "Name of the bucket")
+	_ = DeleteBucket.MarkFlagRequired("bucket")
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ArthurDescourvieres/plateforme-mycli/cli/cmd/bucket"
 	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/s3"
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,7 @@ var rootCmd = &cobra.Command{
 
 func Execute(client s3.S3Client) {
 	s3Client = client
+	bucket.SetClient(client)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

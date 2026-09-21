@@ -12,13 +12,36 @@ La **documentation** est en français : ce fichier, le README, les issues.
 **Un fichier par commande, un fichier par opération.** 
 
 ```
-cmd/bucket_create.go          la commande « bucket create »
-internal/s3/create_bucket.go  l'opération S3 « CreateBucket »
+cmd/bucket.go                    le groupe « bucket » : déclare la commande parente
+cmd/bucket/bucket_create.go      la commande « bucket create »
+internal/s3/create_bucket.go     l'opération S3 « CreateBucket »
 ```
 
 Les deux moitiés sont inversées, et c'est voulu : dans `cmd/` le nom suit ce que
 tape l'utilisateur (`mycli bucket create`), dans `internal/s3/` il suit le nom
 de l'opération S3 (`CreateBucket`).
+
+## Un sous-dossier par groupe de commandes
+
+Chaque groupe (`bucket`, `object`, `alias`) a son propre sous-dossier dans
+`cmd/`, qui est un package Go à part :
+
+```
+cmd/
+├── root.go
+├── bucket.go        package cmd    — groupe « bucket », enregistre ses commandes
+├── bucket/          package bucket — bucket_create.go, bucket_delete.go, bucket_list.go
+├── object.go        package cmd
+├── object/          package object — object_list.go, object_upload.go, ...
+├── alias.go         package cmd
+└── alias/           package alias  — alias_set.go, alias_list.go, alias_use.go
+```
+
+- Dans le sous-dossier, la commande est une variable **exportée** nommée
+  verbe + nom : `bucket.CreateBucket`, `object.UploadObject`, `alias.SetAlias`.
+- Le fichier du groupe (`cmd/bucket.go`) importe le sous-package et enregistre
+  toutes ses commandes avec `AddCommand`. Le `init()` d'un fichier de commande
+  ne déclare que ses options.
 
 Minuscules et tirets bas, jamais de tiret simple ni de majuscule.
 
@@ -33,7 +56,8 @@ Toujours les mêmes cinq étapes, dans cet ordre :
 4. l'appel d'une fonction de `internal/s3/`
 5. l'affichage du résultat, ou le renvoi de l'erreur
 
-Puis une fonction `init()` qui enregistre la commande auprès de son groupe.
+Puis une fonction `init()` qui déclare les options de la commande. L'enregistrement
+auprès du groupe se fait dans le fichier du groupe (`cmd/bucket.go`).
 
 ## `RunE`, jamais `Run`
 

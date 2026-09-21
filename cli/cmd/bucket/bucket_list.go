@@ -1,12 +1,19 @@
-package cmd
+package bucket
 
 import (
 	"fmt"
 
+	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/s3"
 	"github.com/spf13/cobra"
 )
 
-var bucketListCmd = &cobra.Command{
+var s3Client s3.S3Client
+
+func SetClient(client s3.S3Client) {
+	s3Client = client
+}
+
+var ListBuckets = &cobra.Command{
 	Use:   "list",
 	Short: "List buckets",
 	Long:  "List all buckets in the S3 storage.",
@@ -20,8 +27,4 @@ var bucketListCmd = &cobra.Command{
 		}
 		return nil
 	},
-}
-
-func init() {
-	bucketCmd.AddCommand(bucketListCmd)
 }
