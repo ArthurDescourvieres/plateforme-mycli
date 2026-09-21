@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
 // Config repr├®sente la configuration finale utilis├®e par l'application.
@@ -91,27 +93,41 @@ func loadDefaultProfile() (Profile, error) {
 
 // mergeEnv applique les variables d'environnement MYCLI_* // sur le profil fourni. // Les variables pr├®sentes ont priorit├® sur les valeurs du fichier.
 func mergeEnv(profile Profile) Profile {
-	if value, ok := os.LookupEnv("MYCLI_URL"); ok {
+	if value, ok := lookupEnv("MYCLI_URL", "MINIO_ENDPOINT"); ok {
 		profile.URL = value
 	}
 
-	if value, ok := os.LookupEnv("MYCLI_ACCESS_KEY"); ok {
+	if value, ok := lookupEnv("MYCLI_ACCESS_KEY", "MINIO_USER"); ok {
 		profile.AccessKey = value
 	}
 
-	if value, ok := os.LookupEnv("MYCLI_SECRET_KEY"); ok {
+	if value, ok := lookupEnv("MYCLI_SECRET_KEY", "MINIO_PASS"); ok {
 		profile.SecretKey = value
 	}
 
-	if value, ok := os.LookupEnv("MYCLI_REGION"); ok {
+	if value, ok := lookupEnv("MYCLI_REGION", "MINIO_REGION"); ok {
 		profile.Region = value
 	}
 
 	return profile
 }
 
+func lookupEnv(primary string, fallback string) (string, bool) {
+	if value, ok := os.LookupEnv(primary); ok {
+		return value, true
+	}
+
+	return os.LookupEnv(fallback)
+}
+
 // Load construit la configuration finale de MyCLI. // La priorit├® appliqu├®e est : // environnement > fichier de configuration > valeurs par d├®faut.
 func Load() Config {
+	for _, path := range []string{"../docker/.env", "docker/.env"} {
+		if err := godotenv.Load(path); err == nil {
+			break
+		}
+	}
+
 	profile := Profile{
 		URL:    defaultURL,
 		Region: defaultRegion,

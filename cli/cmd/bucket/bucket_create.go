@@ -3,23 +3,19 @@ package bucket
 import (
 	"fmt"
 
-	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/s3"
 	"github.com/spf13/cobra"
 )
 
 var CreateBucket = &cobra.Command{
-	Use:   "create",
+	Use:   "create <bucket>",
 	Short: "Create a bucket",
-	Long:  "Create a new bucket in the S3 storage. This command requires the name of the bucket to be specified using the --bucket flag.",
-	Run: func(cmd *cobra.Command, args []string) {
-		s3.CreateBucket(bucketName)
-		fmt.Fprintf(cmd.OutOrStdout(), "Bucket created: %s\n", bucketName)
+	Long:  "Create a new bucket in the S3 storage.",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if err := s3Client.CreateBucket(cmd.Context(), args[0]); err != nil {
+			return err
+		}
+		fmt.Fprintf(cmd.OutOrStdout(), "Bucket created: %s\n", args[0])
+		return nil
 	},
-}
-
-var bucketName string
-
-func init() {
-	CreateBucket.Flags().StringVarP(&bucketName, "bucket", "b", "", "Name of the bucket")
-	_ = CreateBucket.MarkFlagRequired("bucket")
 }
