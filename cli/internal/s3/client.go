@@ -2,6 +2,7 @@ package s3
 
 import (
 	"context"
+	"io"
 
 	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/config"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -12,6 +13,7 @@ import (
 
 type S3Client interface {
 	CreateBucket(context.Context, string) error
+	PutObject(context.Context, string, string, io.Reader) error
 	DeleteBucket(context.Context, string) error
 	ListBuckets(context.Context) ([]string, error)
 }
@@ -39,3 +41,4 @@ func NewClient(ctx context.Context, cfg config.Config) (S3Client, error) {
 		}),
 	}, nil
 }
+
