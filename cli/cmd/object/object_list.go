@@ -1,13 +1,31 @@
 package object
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+
+	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/s3"
+	"github.com/spf13/cobra"
+)
+
+var s3Client s3.S3Client
+
+func SetClient(client s3.S3Client) {
+	s3Client = client
+}
 
 var objectListBucket string
 
 var ListObjects = &cobra.Command{
 	Use:   "list",
-	Short: "list objects in a bucket",
+	Short: "List objects in a bucket",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		items, err := s3Client.ListObjects(cmd.Context(), objectListBucket)
+		if err != nil {
+			return err
+		}
+		for _, item := range items {
+			fmt.Fprintln(cmd.OutOrStdout(), item.Key)
+		}
 		return nil
 	},
 }

@@ -13,7 +13,7 @@ func (c *client) GetObject(ctx context.Context, bucket string, key string) (io.R
 		Key: &key,
 	})
 	if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 	return result.Body, nil
 }
