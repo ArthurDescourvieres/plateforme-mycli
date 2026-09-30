@@ -16,6 +16,7 @@ type S3Client interface {
 	PutObject(context.Context, string, string, io.Reader) error
 	DeleteBucket(context.Context, string) error
 	ListBuckets(context.Context) ([]string, error)
+	GetObject(context.Context, string, string) (io.ReadCloser, error)
 }
 
 type client struct {
@@ -41,4 +42,3 @@ func NewClient(ctx context.Context, cfg config.Config) (S3Client, error) {
 		}),
 	}, nil
 }
-
