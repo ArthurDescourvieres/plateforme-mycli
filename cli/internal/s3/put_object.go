@@ -14,5 +14,5 @@ body io.Reader) error {
 		Key: &key,
 		Body: body,
 	})
-	return err
+	return mapError(err)
 }

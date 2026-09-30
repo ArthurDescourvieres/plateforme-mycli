@@ -13,10 +13,12 @@ import (
 
 type S3Client interface {
 	CreateBucket(context.Context, string) error
-	PutObject(context.Context, string, string, io.Reader) error
 	DeleteBucket(context.Context, string) error
 	ListBuckets(context.Context) ([]string, error)
+	PutObject(context.Context, string, string, io.Reader) error
 	GetObject(context.Context, string, string) (io.ReadCloser, error)
+	ListObjects(context.Context, string) ([]ObjectItem, error)
+	DeleteObject(context.Context, string, string) error
 }
 
 type client struct {
