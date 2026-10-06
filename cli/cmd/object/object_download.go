@@ -2,6 +2,8 @@ package object
 
 import (
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +16,25 @@ var DownloadObject = &cobra.Command{
 	Use:   "download",
 	Short: "Download an object from a bucket",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return fmt.Errorf("download is not implemented yet")
+		body, err := s3Client.GetObject(cmd.Context(), downloadBucket, downloadFile)
+		if err != nil {
+			return err
+		}
+		defer body.Close()
+
+		file, err := os.Create(downloadOutput)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		_, err = io.Copy(file, body)
+		if err != nil {
+			return err
+		}
+
+		fmt.Fprintf(cmd.OutOrStdout(), "Object downloaded: %s/%s -> %s\n", downloadBucket, downloadFile, downloadOutput)
+		return nil
 	},
 }
 
