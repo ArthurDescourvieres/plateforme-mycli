@@ -34,6 +34,24 @@ func TestLoadFromEnv(t *testing.T) {
 
 // TestLoadDefaultProfile vérifie que le profil par défaut est correctement récupéré depuis le fichier de configuration.
 func TestLoadDefaultProfile(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "config.json")
+	configContent := `{
+		"default": "minio-test",
+		"aliases": {
+			"minio-test": {
+				"url": "http://localhost:9000",
+				"access_key": "test-access",
+				"secret_key": "test-secret",
+				"region": "us-east-1"
+			}
+		}
+	}`
+	if err := os.WriteFile(configPath, []byte(configContent), 0600); err != nil {
+		t.Fatalf("failed to write test config: %v", err)
+	}
+	t.Setenv("MYCLI_CONFIG", configPath)
+
 	profile, err := loadDefaultProfile()
 	if err != nil {
 		t.Fatalf("failed to load default profile: %v", err)

@@ -73,7 +73,7 @@ test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
 	fi; \
 	test_config=$$(mktemp); \
 	trap 'rm -f "$$test_config"' EXIT; \
-	printf '%s\n' '{"default":"minio-test","aliases":{"minio-test":{"url":"http://localhost:'$${MINIO_PORT:-9000}'","access_key":"test-access","secret_key":"test-secret","region":"us-east-1"}}}' > "$$test_config"; \
+	printf '%s\n' '{"default":"minio-test","aliases":{"minio-test":{"url":"http://localhost:'$${MINIO_PORT:-9000}'","access_key":"'$${MINIO_USER:-admin}'","secret_key":"'$${MINIO_PASS:-password}'","region":"'$${MINIO_REGION:-us-east-1}'"}}}' > "$$test_config"; \
 	cd cli && env -u MINIO_PORT -u MINIO_CONSOLE_PORT -u MINIO_USER -u MINIO_PASS -u MINIO_ENDPOINT -u MINIO_REGION MYCLI_CONFIG="$$test_config" go test ./...
 
 test-all: test # Alias historique pour lancer la suite complète

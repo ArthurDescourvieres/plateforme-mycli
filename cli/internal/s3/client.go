@@ -17,8 +17,8 @@ type S3Client interface {
 	ListBuckets(context.Context) ([]string, error)
 	PutObject(context.Context, string, string, io.Reader) error
 	GetObject(context.Context, string, string) (io.ReadCloser, error)
-	ListObjects(context.Context, string) ([]ObjectItem, error)
 	DeleteObject(context.Context, string, string) error
+	ListObjects(context.Context, string, string) ([]ObjectItem, error)
 }
 
 type client struct {

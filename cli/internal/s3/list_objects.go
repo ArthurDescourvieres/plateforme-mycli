@@ -13,9 +13,10 @@ type ObjectItem struct {
 	LastModified string
 }
 
-func (c *client) ListObjects(ctx context.Context, bucket string) ([]ObjectItem, error) {
+func (c *client) ListObjects(ctx context.Context, bucket string, prefix string) ([]ObjectItem, error) {
 	result, err := c.s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: &bucket,
+		Prefix: &prefix,
 	})
 	if err != nil {
 		return nil, mapError(err)

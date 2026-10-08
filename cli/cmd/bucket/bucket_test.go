@@ -43,7 +43,7 @@ func (f *fakeS3Client) GetObject(context.Context, string, string) (io.ReadCloser
 	return nil, nil
 }
 
-func (f *fakeS3Client) ListObjects(context.Context, string) ([]s3.ObjectItem, error) {
+func (f *fakeS3Client) ListObjects(context.Context, string, string) ([]s3.ObjectItem, error) {
 	return nil, nil
 }
 
