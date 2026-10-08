@@ -43,11 +43,13 @@ mycli: # Lance l'interface en ligne de commande (CLI) pour interagir avec les se
 	@set -a; . ./docker/.env; set +a; cd cli && go run . $(s)
 
 go-lint: # Lance le linter Go pour vérifier le code source et corriger automatiquement les problèmes de formatage
-	@cd cli && golangci run --fix
+	@cd cli && golangci-lint fmt && golangci-lint run --fix
 
 go-lint-check: # Lance le linter Go pour vérifier le code source sans corriger automatiquement les problèmes de formatage
-	@cd cli && golangci-lint fmt golangci run
+	@test -z "$$(cd cli && gofmt -l .)" && cd cli && golangci-lint run
 
+go-deps-check: # Vérifie que toutes les dépendances Go sont correctement installées et à jour
+	@cd cli && go mod verify && go mod tidy -diff && govulncheck ./...
 # --- TEST ---
 
 test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
