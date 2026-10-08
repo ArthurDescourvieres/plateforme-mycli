@@ -39,17 +39,26 @@ restart: # Redémarre un ou tous les conteneurs proprement (ex: make restart s=a
 
 # --- DEV ---
 
-mycli:
+mycli: # Lance l'interface en ligne de commande (CLI) pour interagir avec les services (ex: make mycli ou make mycli s="list buckets")
 	@set -a; . ./docker/.env; set +a; cd cli && go run . $(s)
+
+go-lint: # Lance le linter Go pour vérifier le code source et corriger automatiquement les problèmes de formatage
+	@cd cli && golangci run --fix
+
+go-lint-check: # Lance le linter Go pour vérifier le code source sans corriger automatiquement les problèmes de formatage
+	@cd cli && golangci-lint fmt golangci run
 
 # --- TEST ---
 
 test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
-	@./docker/docker.sh up -d minio; \
+	@health_url="http://localhost:$${MINIO_PORT:-9000}/minio/health/ready"; \
+	if ! curl --fail --silent "$$health_url" >/dev/null; then \
+		./docker/docker.sh up -d minio; \
+	fi; \
 	echo "Waiting for MinIO on port $${MINIO_PORT:-9000}..."; \
 	ready=0; \
 	for attempt in $$(seq 1 30); do \
-		if curl --fail --silent "http://localhost:$${MINIO_PORT:-9000}/minio/health/ready" >/dev/null; then \
+		if curl --fail --silent "$$health_url" >/dev/null; then \
 			ready=1; \
 			break; \
 		fi; \
