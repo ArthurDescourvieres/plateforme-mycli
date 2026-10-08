@@ -2,6 +2,7 @@ package s3
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"github.com/ArthurDescourvieres/plateforme-mycli/cli/internal/config"
@@ -26,6 +27,14 @@ type client struct {
 }
 
 func NewClient(ctx context.Context, cfg config.Config) (S3Client, error) {
+	if cfg.AccessKey == "" {
+		return nil, fmt.Errorf("access key is missing; set MYCLI_ACCESS_KEY or configure an access key in your alias")
+	}
+
+	if cfg.SecretKey == "" {
+		return nil, fmt.Errorf("secret key is missing; set MYCLI_SECRET_KEY or configure a secret key in your alias")
+	}
+
 	awsCfg, err := awsConfig.LoadDefaultConfig(
 		ctx,
 		awsConfig.WithRegion(cfg.Region),
