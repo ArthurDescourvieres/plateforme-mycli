@@ -15,6 +15,7 @@ var s3Client s3.S3Client
 var rootCmd = &cobra.Command{
 	Use:           "mycli",
 	Short:         "Command-line client for an S3 server",
+	Version:       "0.1.0",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
