@@ -15,7 +15,9 @@ var CreateBucket = &cobra.Command{
 		if err := s3Client.CreateBucket(cmd.Context(), args[0]); err != nil {
 			return err
 		}
-		fmt.Fprintf(cmd.OutOrStdout(), "Bucket created: %s\n", args[0])
+		if _, err := fmt.Fprintf(cmd.OutOrStdout(), "Bucket created: %s\n", args[0]); err != nil {
+			return err
+		}
 		return nil
 	},
 }

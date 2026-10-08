@@ -10,7 +10,7 @@ import (
 func (c *client) GetObject(ctx context.Context, bucket string, key string) (io.ReadCloser, error) {
 	result, err := c.s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
-		Key: &key,
+		Key:    &key,
 	})
 	if err != nil {
 		return nil, mapError(err)

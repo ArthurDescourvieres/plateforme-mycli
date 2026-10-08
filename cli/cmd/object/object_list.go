@@ -24,7 +24,9 @@ var ListObjects = &cobra.Command{
 			return err
 		}
 		for _, item := range items {
-			fmt.Fprintln(cmd.OutOrStdout(), item.Key)
+			if _, err := fmt.Fprintln(cmd.OutOrStdout(), item.Key); err != nil {
+				return err
+			}
 		}
 		return nil
 	},
