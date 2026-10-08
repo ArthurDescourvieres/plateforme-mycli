@@ -5,8 +5,6 @@ on:
     types: [opened, closed]
     paths-ignore:
       - '**.md'
-  issues:
-    types: [opened, closed]
 
 jobs:
   notify:
@@ -17,8 +15,8 @@ jobs:
           WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
           KIND: ${{ github.event_name }}
           ACTION: ${{ github.event.action }}
-          TITLE: ${{ github.event.pull_request.title || github.event.issue.title }}
-          LINK: ${{ github.event.pull_request.html_url || github.event.issue.html_url }}
+          TITLE: ${{ github.event.pull_request.title }}
+          LINK: ${{ github.event.pull_request.html_url }}
           WHO: ${{ github.event.sender.login }}
         run: |
           curl -sS -X POST "$WEBHOOK" \
