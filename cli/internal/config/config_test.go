@@ -116,10 +116,18 @@ func TestLoadConfigFile(t *testing.T) {
 func TestLoadDefaultValues(t *testing.T) {
 	t.Setenv("MYCLI_CONFIG", filepath.Join(t.TempDir(), "config.json"))
 
-	os.Unsetenv("MYCLI_URL")
-	os.Unsetenv("MYCLI_ACCESS_KEY")
-	os.Unsetenv("MYCLI_SECRET_KEY")
-	os.Unsetenv("MYCLI_REGION")
+	if err := os.Unsetenv("MYCLI_URL"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_ACCESS_KEY"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_SECRET_KEY"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_REGION"); err != nil {
+		t.Fatal(err)
+	}
 
 	cfg := Load()
 

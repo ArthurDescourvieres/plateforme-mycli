@@ -18,7 +18,9 @@ var DeleteObject = &cobra.Command{
 		if err := s3Client.DeleteObject(cmd.Context(), objectDeleteBucket, objectDeleteFile); err != nil {
 			return err
 		}
-		fmt.Fprintf(cmd.OutOrStdout(), "Object deleted: %s/%s\n", objectDeleteBucket, objectDeleteFile)
+		if _, err := fmt.Fprintf(cmd.OutOrStdout(), "Object deleted: %s/%s\n", objectDeleteBucket, objectDeleteFile); err != nil {
+			return err
+		}
 		return nil
 	},
 }

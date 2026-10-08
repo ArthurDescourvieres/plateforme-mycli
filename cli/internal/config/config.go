@@ -139,10 +139,5 @@ func Load() Config {
 
 	profile = mergeEnv(profile)
 
-	return Config{
-		URL:       profile.URL,
-		AccessKey: profile.AccessKey,
-		SecretKey: profile.SecretKey,
-		Region:    profile.Region,
-	}
+	return Config(profile)
 }

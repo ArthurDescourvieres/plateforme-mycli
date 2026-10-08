@@ -1,6 +1,6 @@
 package s3
 
-import(
+import (
 	"context"
 	"io"
 
@@ -8,11 +8,11 @@ import(
 )
 
 func (c *client) PutObject(ctx context.Context, bucket string, key string,
-body io.Reader) error {
+	body io.Reader) error {
 	_, err := c.s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: &bucket,
-		Key: &key,
-		Body: body,
+		Key:    &key,
+		Body:   body,
 	})
 	return mapError(err)
 }
