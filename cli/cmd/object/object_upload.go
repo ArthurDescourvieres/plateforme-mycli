@@ -19,7 +19,7 @@ var UploadObject = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		key := filepath.Base(uploadFile)
 		err = s3Client.PutObject(cmd.Context(), uploadBucket, key, file)
@@ -27,7 +27,9 @@ var UploadObject = &cobra.Command{
 			return err
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "Object uploaded: %s/%s\n", uploadBucket, key)
+		if _, err := fmt.Fprintf(cmd.OutOrStdout(), "Object uploaded: %s/%s\n", uploadBucket, key); err != nil {
+			return err
+		}
 		return nil
 	},
 }
@@ -36,6 +38,6 @@ func init() {
 	UploadObject.Flags().StringVar(&uploadBucket, "bucket", "", "Name of the target bucket")
 	UploadObject.Flags().StringVar(&uploadFile, "file", "", "Path to the local file to upload")
 
-	UploadObject.MarkFlagRequired("bucket")
-	UploadObject.MarkFlagRequired("file")
+	_ = UploadObject.MarkFlagRequired("bucket")
+	_ = UploadObject.MarkFlagRequired("file")
 }
