@@ -76,7 +76,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic("MinIO unreachable: " + err.Error())
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode != http.StatusOK {
 		panic(fmt.Sprintf(

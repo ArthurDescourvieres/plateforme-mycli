@@ -20,20 +20,22 @@ var DownloadObject = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		defer body.Close()
+		defer func() { _ = body.Close() }()
 
 		file, err := os.Create(downloadOutput)
 		if err != nil {
 			return err
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		_, err = io.Copy(file, body)
 		if err != nil {
 			return err
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "Object downloaded: %s/%s -> %s\n", downloadBucket, downloadFile, downloadOutput)
+		if _, err := fmt.Fprintf(cmd.OutOrStdout(), "Object downloaded: %s/%s -> %s\n", downloadBucket, downloadFile, downloadOutput); err != nil {
+			return err
+		}
 		return nil
 	},
 }
@@ -43,7 +45,7 @@ func init() {
 	DownloadObject.Flags().StringVar(&downloadFile, "file", "", "Name of the object to download")
 	DownloadObject.Flags().StringVar(&downloadOutput, "output", "", "Local path where the file is written")
 
-	DownloadObject.MarkFlagRequired("bucket")
-	DownloadObject.MarkFlagRequired("file")
-	DownloadObject.MarkFlagRequired("output")
+	_ = DownloadObject.MarkFlagRequired("bucket")
+	_ = DownloadObject.MarkFlagRequired("file")
+	_ = DownloadObject.MarkFlagRequired("output")
 }

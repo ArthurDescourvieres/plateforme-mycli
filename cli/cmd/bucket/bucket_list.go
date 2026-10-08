@@ -23,7 +23,9 @@ var ListBuckets = &cobra.Command{
 			return err
 		}
 		for _, bucket := range buckets {
-			fmt.Fprintln(cmd.OutOrStdout(), bucket)
+			if _, err := fmt.Fprintln(cmd.OutOrStdout(), bucket); err != nil {
+				return err
+			}
 		}
 		return nil
 	},
