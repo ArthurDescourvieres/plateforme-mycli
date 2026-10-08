@@ -5,3 +5,6 @@ minio_data*
 *.exe
 mycli
 cli/cli
+
+# sortie de goreleaser
+dist/
