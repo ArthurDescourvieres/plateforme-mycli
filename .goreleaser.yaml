@@ -1,0 +1,28 @@
+version: 2
+
+project_name: mycli
+
+builds:
+  - id: mycli
+    dir: cli
+    main: .
+    binary: mycli
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - formats: [binary]
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
