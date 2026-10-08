@@ -14,9 +14,9 @@ func SetClient(client s3.S3Client) {
 }
 
 var ListBuckets = &cobra.Command{
-	Use:   "list",
-	Short: "List buckets",
-	Long:  "List all buckets in the S3 storage.",
+	Use:     "list",
+	Short:   "List buckets",
+	Long:    "List all buckets in the S3 storage.",
 	Aliases: []string{"ls", "l"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		buckets, err := s3Client.ListBuckets(cmd.Context())
