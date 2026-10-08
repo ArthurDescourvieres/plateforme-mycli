@@ -53,7 +53,8 @@ go-deps-check: # Vérifie que toutes les dépendances Go sont correctement insta
 # --- TEST ---
 
 test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
-	@health_url="http://localhost:$${MINIO_PORT:-9000}/minio/health/ready"; \
+	@set -a; . ./docker/.env; set +a; \
+	health_url="http://localhost:$${MINIO_PORT:-9000}/minio/health/ready"; \
 	if ! curl --fail --silent "$$health_url" >/dev/null; then \
 		./docker/docker.sh up -d minio; \
 	fi; \
@@ -73,7 +74,7 @@ test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
 	test_config=$$(mktemp); \
 	trap 'rm -f "$$test_config"' EXIT; \
 	printf '%s\n' '{"default":"minio-test","aliases":{"minio-test":{"url":"http://localhost:'$${MINIO_PORT:-9000}'","access_key":"test-access","secret_key":"test-secret","region":"us-east-1"}}}' > "$$test_config"; \
-	cd cli && MYCLI_CONFIG="$$test_config" go test ./...
+	cd cli && env -u MINIO_PORT -u MINIO_CONSOLE_PORT -u MINIO_USER -u MINIO_PASS -u MINIO_ENDPOINT -u MINIO_REGION MYCLI_CONFIG="$$test_config" go test ./...
 
 test-all: test # Alias historique pour lancer la suite complète
 

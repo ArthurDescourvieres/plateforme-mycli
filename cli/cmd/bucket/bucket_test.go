@@ -98,7 +98,7 @@ func TestCreateBucket(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	name := "test-bucket"
+	name := fmt.Sprintf("test-bucket-%d", time.Now().UnixNano())
 	t.Cleanup(func() {
 		cleanupCtx, cleanupCancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cleanupCancel()
@@ -124,6 +124,20 @@ func TestCreateBucket(t *testing.T) {
 	}
 
 	t.Errorf("bucket %q was not created", name)
+}
+
+func TestDeleteBucket(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	name := fmt.Sprintf("test-bucket-%d", time.Now().UnixNano())
+	if err := s3Client.CreateBucket(ctx, name); err != nil {
+		t.Fatalf("create bucket for delete test: %v", err)
+	}
+
+	if err := s3Client.DeleteBucket(ctx, name); err != nil {
+		t.Errorf("delete %q bucket: %v", name, err)
+	}
 }
 
 func TestCreateBucketCommand(t *testing.T) {
@@ -166,19 +180,5 @@ func TestDeleteBucketCommand(t *testing.T) {
 
 	if fake.deletedBucket != "unit-bucket" {
 		t.Errorf("expected unit-bucket, got %q", fake.deletedBucket)
-	}
-}
-
-func TestDeleteBucket(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	name := fmt.Sprintf("test-bucket-%d", time.Now().UnixNano())
-	if err := s3Client.CreateBucket(ctx, name); err != nil {
-		t.Fatalf("create bucket for delete test: %v", err)
-	}
-
-	if err := s3Client.DeleteBucket(ctx, name); err != nil {
-		t.Errorf("delete %q bucket: %v", name, err)
 	}
 }
