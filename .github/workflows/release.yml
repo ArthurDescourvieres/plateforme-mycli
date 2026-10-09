@@ -27,7 +27,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.26.6'
+          go-version: '1.26.9'
 
       - name: Check configuration and build without publishing
         if: github.event_name == 'pull_request'
