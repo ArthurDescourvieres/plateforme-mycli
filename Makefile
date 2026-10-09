@@ -1,5 +1,12 @@
+# Charger .env
+ifneq (,$(wildcard ./docker/.env))
+    include ./docker/.env
+    export
+endif
+
 # Variables par défaut
-s ?= 
+s ?=
+PROJECT ?= plateforme_cli
 
 .PHONY: env perms init launch remove start stop restart mycli test test-all help
 
@@ -14,28 +21,24 @@ env: # Crée le fichier .env à partir de l'exemple s'il n'existe pas déjà
 		echo ".env already exists"; \
 	fi
 
-perms: # Donne les droits d'exécution au script docker helper
-	@chmod +x ./docker/docker.sh
-
-init: env perms # Exécute toutes les étapes d'initialisation pour préparer l'environnement de développement
-
+init: env # Exécute toutes les étapes d'initialisation pour préparer l'environnement de développement
 
 # --- DOCKER ---
 
 launch: # Lance les services Docker en mode développement avec docker-compose
-	./docker/docker.sh up -d --build
+	@cd ./docker && docker compose -p "$(PROJECT)" up -d --build
 
 remove: # Arrête les conteneurs et supprime les volumes associés (remise à zéro)
-	./docker/docker.sh down -v
+	@cd ./docker && docker compose -p "$(PROJECT)" down -v
 
 start: # Démarre les conteneurs existants (ex: make start ou make start s=api)
-	./docker/docker.sh start $(s)
+	@cd ./docker && docker compose -p "$(PROJECT)" start $(s)
 
 stop: # Arrête temporairement les conteneurs (ex: make stop ou make stop s=api)
-	./docker/docker.sh stop $(s)
+	@cd ./docker && docker compose -p "$(PROJECT)" stop $(s)
 
 restart: # Redémarre un ou tous les conteneurs proprement (ex: make restart s=api)
-	./docker/docker.sh restart $(s)
+	@cd ./docker && docker compose -p "$(PROJECT)" restart $(s)
 
 # --- DEV ---
 
@@ -56,7 +59,7 @@ test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
 	@set -a; . ./docker/.env; set +a; \
 	health_url="http://localhost:$${MINIO_PORT:-9000}/minio/health/ready"; \
 	if ! curl --fail --silent "$$health_url" >/dev/null; then \
-		./docker/docker.sh up -d minio; \
+		(cd ./docker && docker compose -p "$$PROJECT" up -d minio); \
 	fi; \
 	echo "Waiting for MinIO on port $${MINIO_PORT:-9000}..."; \
 	ready=0; \
@@ -74,7 +77,7 @@ test: init # Démarre MinIO, attend sa disponibilité et lance tous les tests Go
 	test_config=$$(mktemp); \
 	trap 'rm -f "$$test_config"' EXIT; \
 	printf '%s\n' '{"default":"minio-test","aliases":{"minio-test":{"url":"http://localhost:'$${MINIO_PORT:-9000}'","access_key":"'$${MINIO_USER:-admin}'","secret_key":"'$${MINIO_PASS:-password}'","region":"'$${MINIO_REGION:-us-east-1}'"}}}' > "$$test_config"; \
-	cd cli && env -u MINIO_PORT -u MINIO_CONSOLE_PORT -u MINIO_USER -u MINIO_PASS -u MINIO_ENDPOINT -u MINIO_REGION MYCLI_CONFIG="$$test_config" go test ./...
+	cd cli && env -u MINIO_PORT -u MINIO_CONSOLE_PORT -u MINIO_USER -u MINIO_PASS -u MINIO_ENDPOINT -u MINIO_REGION MYCLI_CONFIG="$$test_config" go test -cover ./...
 
 test-all: test # Alias historique pour lancer la suite complète
 

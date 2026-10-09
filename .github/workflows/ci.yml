@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  format:
+  format-lint:
     name: Format and lint Go code
     defaults:
       run:
@@ -35,25 +35,55 @@ jobs:
           version: v2.12.2
           working-directory: cli
 
-      - name: Verify Go dependencies
+  dependencies:
+    name: Check Go dependencies
+    defaults:
+      run:
+        shell: bash
         working-directory: cli
+
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.9'
+          cache: true
+
+      - name: Verify Go dependencies
         run: go mod verify
 
       - name: Check Go modules
-        working-directory: cli
         run: |
           go mod tidy
           git diff --exit-code go.mod go.sum
 
       - name: Check vulnerabilities
-        working-directory: cli
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@v1.8.0
           govulncheck ./...
 
+  leaks:
+    name: Detect leaked secrets
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   test:
     name: Run tests
-    needs: format
+    needs: [format-lint, dependencies, leaks]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -65,5 +95,3 @@ jobs:
 
       - name: Start MinIO and run tests
         run: make test
-
-
