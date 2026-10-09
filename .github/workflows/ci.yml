@@ -70,6 +70,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
         with:
@@ -77,6 +78,8 @@ jobs:
 
       - name: Scan repository for secrets
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     name: Run tests
@@ -92,4 +95,3 @@ jobs:
 
       - name: Start MinIO and run tests
         run: make test
-
