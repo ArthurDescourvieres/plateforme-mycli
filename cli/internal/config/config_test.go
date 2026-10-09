@@ -290,8 +290,9 @@ func TestLookupEnvPriority(t *testing.T) {
 	t.Setenv("MINIO_ENDPOINT", "http://minio:9000")
 
 	t.Setenv("MYCLI_URL", "")
-	os.Unsetenv("MYCLI_URL")
-
+	if err := os.Unsetenv("MYCLI_URL"); err != nil {
+		t.Fatal(err)
+	}
 	value, ok = lookupEnv("MYCLI_URL", "MINIO_ENDPOINT")
 
 	if !ok {
