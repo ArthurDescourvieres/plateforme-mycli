@@ -53,8 +53,8 @@ func (f *fakeS3Client) DeleteObject(context.Context, string, string) error {
 
 func TestMain(m *testing.M) {
 	cfg := config.Load()
-	cfg.AccessKey = "admin"
-	cfg.SecretKey = "password"
+	cfg.AccessKey = "test-access"
+	cfg.SecretKey = "test-secret"
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
