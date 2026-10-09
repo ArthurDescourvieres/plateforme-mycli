@@ -24,7 +24,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.26.6'
+          go-version: '1.26.9'
 
       - name: Check gofmt
         run: test -z "$(gofmt -l .)"
@@ -61,7 +61,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.26.6'
+          go-version: '1.26.9'
 
       - name: Start MinIO and run tests
         run: make test
