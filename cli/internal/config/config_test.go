@@ -166,7 +166,6 @@ func TestLoadDefaultValues(t *testing.T) {
 	}
 }
 
-
 // TestLoadConfigFileFromPathFileNotFound vérifie qu'une erreur est retournée lorsque le fichier de configuration n'existe pas.
 func TestLoadConfigFileFromPathFileNotFound(t *testing.T) {
 	_, err := loadConfigFileFromPath(filepath.Join(t.TempDir(), "missing.json"))
@@ -241,7 +240,7 @@ func TestLoadInvalidFileUsesDefaults(t *testing.T) {
 	t.Setenv("MYCLI_CONFIG", configPath)
 
 	if err := os.Unsetenv("MYCLI_URL"); err != nil {
-    t.Fatal(err)
+		t.Fatal(err)
 	}
 	if err := os.Unsetenv("MYCLI_ACCESS_KEY"); err != nil {
 		t.Fatal(err)
@@ -272,7 +271,7 @@ func TestLoadInvalidFileUsesDefaults(t *testing.T) {
 	}
 }
 
-//vérifier que lookupEnv() privilégie MYCLI_* lorsqu'elle existe et utilise la variable MINIO_* correspondante lorsque MYCLI_* est absente.
+// vérifier que lookupEnv() privilégie MYCLI_* lorsqu'elle existe et utilise la variable MINIO_* correspondante lorsque MYCLI_* est absente.
 func TestLookupEnvPriority(t *testing.T) {
 	t.Setenv("MYCLI_URL", "http://mycli:9000")
 	t.Setenv("MINIO_ENDPOINT", "http://minio:9000")
