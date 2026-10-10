@@ -4,7 +4,7 @@ Merci de contribuer à `plateforme-mycli`.
 
 ## Prérequis
 
-- Go 1.26.6 ou supérieur
+- Go 1.26.9 ou supérieur
 - Docker avec Docker Compose
 - Make
 
