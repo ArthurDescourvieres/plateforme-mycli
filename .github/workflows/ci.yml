@@ -1,11 +1,10 @@
-```yaml
+
 name: CI
 
 on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
@@ -17,7 +16,6 @@ jobs:
       run:
         shell: bash
         working-directory: cli
-
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -74,4 +72,3 @@ jobs:
 
       - name: Start MinIO and run tests
         run: make test
-```
