@@ -8,6 +8,9 @@ import (
 )
 
 func (c *client) GetObject(ctx context.Context, bucket string, key string) (io.ReadCloser, error) {
+	if err := validateBucketName(bucket); err != nil {
+		return nil, err
+	}
 	result, err := c.s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
 		Key:    &key,

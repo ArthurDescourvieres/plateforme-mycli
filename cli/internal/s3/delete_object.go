@@ -7,6 +7,9 @@ import (
 )
 
 func (c *client) DeleteObject(ctx context.Context, bucket, key string) error {
+	if err := validateBucketName(bucket); err != nil {
+		return err
+	}
 	_, err := c.s3Client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: &bucket,
 		Key:    &key,
