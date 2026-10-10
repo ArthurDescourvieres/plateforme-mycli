@@ -146,7 +146,8 @@ func TestCreateBucketCommand(t *testing.T) {
 	s3Client = fake
 	t.Cleanup(func() { s3Client = previousClient })
 
-	if err := CreateBucket.RunE(CreateBucket, []string{"unit-bucket"}); err != nil {
+	createBucketName = "unit-bucket"
+	if err := CreateBucket.RunE(CreateBucket, nil); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
@@ -162,7 +163,8 @@ func TestCreateBucketCommandReturnsError(t *testing.T) {
 	s3Client = fake
 	t.Cleanup(func() { s3Client = previousClient })
 
-	err := CreateBucket.RunE(CreateBucket, []string{"unit-bucket"})
+	createBucketName = "unit-bucket"
+	err := CreateBucket.RunE(CreateBucket, nil)
 	if !errors.Is(err, expectedErr) {
 		t.Fatalf("expected %v, got %v", expectedErr, err)
 	}
@@ -174,7 +176,8 @@ func TestDeleteBucketCommand(t *testing.T) {
 	s3Client = fake
 	t.Cleanup(func() { s3Client = previousClient })
 
-	if err := DeleteBucket.RunE(DeleteBucket, []string{"unit-bucket"}); err != nil {
+	deleteBucketName = "unit-bucket"
+	if err := DeleteBucket.RunE(DeleteBucket, nil); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
