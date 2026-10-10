@@ -17,7 +17,6 @@ import (
 )
 
 func setupClient(t *testing.T) {
-	// Pelagie function to load env keys
 	cfg := config.Load()
 
 	if cfg.AccessKey == "" || cfg.SecretKey == "" {

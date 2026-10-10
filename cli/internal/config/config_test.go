@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-// TestLoadFromEnv vérifie que la configuration peut être chargée depuis les variables d'environnement MYCLI_*
 func TestLoadFromEnv(t *testing.T) {
 	t.Setenv("MYCLI_URL", "http://serveur-test:9000")
 	t.Setenv("MYCLI_ACCESS_KEY", "test-access")
@@ -32,7 +31,6 @@ func TestLoadFromEnv(t *testing.T) {
 	}
 }
 
-// TestLoadDefaultProfile vérifie que le profil par défaut est correctement récupéré depuis le fichier de configuration.
 func TestLoadDefaultProfile(t *testing.T) {
 	tempDir := t.TempDir()
 	configPath := filepath.Join(tempDir, "config.json")
@@ -74,7 +72,6 @@ func TestLoadDefaultProfile(t *testing.T) {
 	}
 }
 
-// TestLoadEnvironmentOverridesFile vérifie que les variables d'environnement ont priorité sur les valeurs du fichier.
 func TestLoadEnvironmentOverridesFile(t *testing.T) {
 	t.Setenv("MYCLI_URL", "http://serveur-env:9000")
 
@@ -85,7 +82,6 @@ func TestLoadEnvironmentOverridesFile(t *testing.T) {
 	}
 }
 
-// TestLoadConfigFile vérifie que le fichier JSON de configuration est correctement lu et que les valeurs du profil sont récupérées.
 func TestLoadConfigFile(t *testing.T) {
 	tempDir := t.TempDir()
 	configPath := filepath.Join(tempDir, "config.json")
@@ -130,7 +126,6 @@ func TestLoadConfigFile(t *testing.T) {
 	}
 }
 
-// TestLoadDefaultValues vérifie que les valeurs par défaut // sont utilisées lorsqu'aucun fichier ni variable d'environnement // ne fournit de configuration.
 func TestLoadDefaultValues(t *testing.T) {
 	t.Setenv("MYCLI_CONFIG", filepath.Join(t.TempDir(), "config.json"))
 

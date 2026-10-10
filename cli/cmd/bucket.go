@@ -6,8 +6,9 @@ import (
 )
 
 var bucketCmd = &cobra.Command{
-	Use:   "bucket",
-	Short: "Manage buckets",
+	Use:               "bucket",
+	Short:             "Manage buckets",
+	PersistentPreRunE: connect,
 }
 
 func init() {

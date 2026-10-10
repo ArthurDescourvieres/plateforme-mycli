@@ -6,8 +6,9 @@ import (
 )
 
 var objectCmd = &cobra.Command{
-	Use:   "object",
-	Short: "Manage objects inside a bucket",
+	Use:               "object",
+	Short:             "Manage objects inside a bucket",
+	PersistentPreRunE: connect,
 }
 
 func init() {
