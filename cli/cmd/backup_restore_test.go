@@ -17,7 +17,6 @@ import (
 )
 
 func setupClient(t *testing.T) {
-	// Pelagie function to load env keys
 	cfg := config.Load()
 
 	if cfg.AccessKey == "" || cfg.SecretKey == "" {
@@ -61,9 +60,9 @@ func TestBackupRestore(t *testing.T) {
 		t.Fatalf("write local file: %v", err)
 	}
 
-	runCommand(t, "bucket", "create", bucketName)
+	runCommand(t, "bucket", "create", "--bucket", bucketName)
 	t.Cleanup(func() {
-		runCommand(t, "bucket", "delete", bucketName)
+		runCommand(t, "bucket", "delete", "--bucket", bucketName)
 	})
 	runCommand(t, "object", "upload", "--bucket", bucketName, "--file", original)
 	t.Cleanup(func() {

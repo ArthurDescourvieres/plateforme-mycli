@@ -7,11 +7,17 @@ import (
 )
 
 func (c *client) CreateBucket(ctx context.Context, name string) error {
+	if err := validateBucketName(name); err != nil {
+		return err
+	}
 	_, err := c.s3Client.CreateBucket(ctx, &s3.CreateBucketInput{Bucket: &name})
 	return mapError(err)
 }
 
 func (c *client) DeleteBucket(ctx context.Context, name string) error {
+	if err := validateBucketName(name); err != nil {
+		return err
+	}
 	_, err := c.s3Client.DeleteBucket(ctx, &s3.DeleteBucketInput{Bucket: &name})
 	return mapError(err)
 }

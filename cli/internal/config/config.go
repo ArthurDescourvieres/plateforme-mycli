@@ -9,7 +9,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Config repr├®sente la configuration finale utilis├®e par l'application.
 type Config struct {
 	URL       string
 	AccessKey string
@@ -17,13 +16,11 @@ type Config struct {
 	Region    string
 }
 
-// Valeurs utilis├®es lorsque aucune configuration n'est fournie // par les variables d'environnement ou le fichier de configuration.
 const (
 	defaultURL    = "http://localhost:9000"
 	defaultRegion = "us-east-1"
 )
 
-// Profile repr├®sente un profil de connexion enregistr├® // dans le fichier de configuration JSON.
 type Profile struct {
 	URL       string `json:"url"`
 	AccessKey string `json:"access_key"`
@@ -31,13 +28,11 @@ type Profile struct {
 	Region    string `json:"region"`
 }
 
-// fileConfig repr├®sente la structure compl├¿te du fichier config.json. // Le fichier peut contenir plusieurs profils appel├®s "aliases".
 type fileConfig struct {
 	Default string             `json:"default"`
 	Aliases map[string]Profile `json:"aliases"`
 }
 
-// configPath d├®termine le chemin du fichier de configuration. // La variable MYCLI_CONFIG permet de d├®finir un chemin personnalis├®, // principalement utile pour les tests. // En utilisation normale, le fichier se trouve dans ~/.mycli/config.json.
 func configPath() (string, error) {
 	if path := os.Getenv("MYCLI_CONFIG"); path != "" {
 		return path, nil
@@ -51,7 +46,6 @@ func configPath() (string, error) {
 	return filepath.Join(home, ".mycli", "config.json"), nil
 }
 
-// loadConfigFileFromPath lit un fichier JSON ├á partir du chemin fourni // et le transforme en structure fileConfig.
 func loadConfigFileFromPath(path string) (fileConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -66,7 +60,6 @@ func loadConfigFileFromPath(path string) (fileConfig, error) {
 	return cfg, nil
 }
 
-// loadConfigFile r├®cup├¿re le chemin du fichier de configuration, // puis charge et d├®code son contenu JSON.
 func loadConfigFile() (fileConfig, error) {
 	path, err := configPath()
 	if err != nil {
@@ -76,7 +69,6 @@ func loadConfigFile() (fileConfig, error) {
 	return loadConfigFileFromPath(path)
 }
 
-// loadDefaultProfile charge le fichier de configuration // et r├®cup├¿re le profil indiqu├® par la propri├®t├® "default".
 func loadDefaultProfile() (Profile, error) {
 	cfg, err := loadConfigFile()
 	if err != nil {
@@ -91,7 +83,6 @@ func loadDefaultProfile() (Profile, error) {
 	return profile, nil
 }
 
-// mergeEnv applique les variables d'environnement MYCLI_* // sur le profil fourni. // Les variables pr├®sentes ont priorit├® sur les valeurs du fichier.
 func mergeEnv(profile Profile) Profile {
 	if value, ok := lookupEnv("MYCLI_URL", "MINIO_ENDPOINT"); ok {
 		profile.URL = value
@@ -120,7 +111,6 @@ func lookupEnv(primary string, fallback string) (string, bool) {
 	return os.LookupEnv(fallback)
 }
 
-// Load construit la configuration finale de MyCLI. // La priorit├® appliqu├®e est : // environnement > fichier de configuration > valeurs par d├®faut.
 func Load() Config {
 	for _, path := range []string{"../docker/.env", "docker/.env"} {
 		if err := godotenv.Load(path); err == nil {

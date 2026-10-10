@@ -14,6 +14,9 @@ type ObjectItem struct {
 }
 
 func (c *client) ListObjects(ctx context.Context, bucket string, prefix string) ([]ObjectItem, error) {
+	if err := validateBucketName(bucket); err != nil {
+		return nil, err
+	}
 	result, err := c.s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: &bucket,
 		Prefix: &prefix,
