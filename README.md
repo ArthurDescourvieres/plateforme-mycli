@@ -133,8 +133,8 @@ flowchart LR
     mycli --> object[object]
 
     bucket --> blist["list (alias : ls, l)"]
-    bucket --> bcreate["create BUCKET"]
-    bucket --> bdelete["delete BUCKET"]
+    bucket --> bcreate["create --bucket BUCKET"]
+    bucket --> bdelete["delete --bucket BUCKET"]
 
     object --> olist["list --bucket BUCKET [--prefix PREFIXE]"]
     object --> oupload["upload --bucket BUCKET --file CHEMIN"]
@@ -147,8 +147,8 @@ Chaque commande accepte aussi `-h` ou `--help`.
 | Commande | Rôle | Opération S3 | Requête HTTP |
 |---|---|---|---|
 | `mycli bucket list` | Lister les buckets | [ListBuckets](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html) | `GET /` |
-| `mycli bucket create <bucket>` | Créer un bucket | [CreateBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html) | `PUT /{bucket}` |
-| `mycli bucket delete <bucket>` | Supprimer un bucket | [DeleteBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html) | `DELETE /{bucket}` |
+| `mycli bucket create --bucket <bucket>` | Créer un bucket | [CreateBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html) | `PUT /{bucket}` |
+| `mycli bucket delete --bucket <bucket>` | Supprimer un bucket | [DeleteBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html) | `DELETE /{bucket}` |
 | `mycli object upload --bucket <bucket> --file <chemin>` | Envoyer un fichier local dans un bucket | [PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html) | `PUT /{bucket}/{key}` |
 | `mycli object list --bucket <bucket>` | Lister les fichiers d'un bucket | [ListObjectsV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html) | `GET /{bucket}?list-type=2` |
 | `mycli object download --bucket <bucket> --file <nom> --output <chemin>` | Télécharger un fichier | [GetObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html) | `GET /{bucket}/{key}` |
@@ -166,8 +166,8 @@ MinIO.
 | Action demandée par le sujet | Nom cité dans le sujet | Commande `mycli` |
 |---|---|---|
 | Lister les buckets | `list-buckets` | `mycli bucket list` |
-| Créer un bucket | `create-bucket` | `mycli bucket create <bucket>` |
-| Supprimer un bucket | | `mycli bucket delete <bucket>` |
+| Créer un bucket | `create-bucket` | `mycli bucket create --bucket <bucket>` |
+| Supprimer un bucket | | `mycli bucket delete --bucket <bucket>` |
 | Téléverser un fichier dans un bucket | `upload-file` | `mycli object upload --bucket <bucket> --file <chemin>` |
 | Lister les objets d'un bucket | | `mycli object list --bucket <bucket>` |
 | Télécharger un fichier depuis un bucket | | `mycli object download --bucket <bucket> --file <nom> --output <chemin>` |
@@ -180,7 +180,7 @@ par ressource (`bucket`, `object`), sur le modèle de clients comme `aws s3` ou
 ### Exemple complet
 
 ```console
-$ mycli bucket create demo
+$ mycli bucket create --bucket demo
 Bucket created: demo
 
 $ mycli bucket list
@@ -201,7 +201,7 @@ Object downloaded: demo/rapport.txt -> copie.txt
 $ mycli object delete --bucket demo --file rapport.txt
 Object deleted: demo/rapport.txt
 
-$ mycli bucket delete demo
+$ mycli bucket delete --bucket demo
 Bucket deleted: demo
 ```
 
@@ -209,7 +209,7 @@ En cas d'erreur, `mycli` affiche un message explicite et se termine avec un
 code de sortie non nul :
 
 ```console
-$ mycli bucket delete inconnu
+$ mycli bucket delete --bucket inconnu
 [NoSuchBucket] bucket does not exist; create it first or check the name (http 404)
 ```
 
