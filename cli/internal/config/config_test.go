@@ -160,3 +160,141 @@ func TestLoadDefaultValues(t *testing.T) {
 		t.Errorf("expected default Region %q, got %q", defaultRegion, cfg.Region)
 	}
 }
+
+// TestLoadConfigFileFromPathFileNotFound vérifie qu'une erreur est retournée lorsque le fichier de configuration n'existe pas.
+func TestLoadConfigFileFromPathFileNotFound(t *testing.T) {
+	_, err := loadConfigFileFromPath(filepath.Join(t.TempDir(), "missing.json"))
+
+	if err == nil {
+		t.Fatal("expected error for missing config file, got nil")
+	}
+}
+
+// TestLoadConfigFileFromPathInvalidJSON vérifie qu'une erreur est retournée lorsque le fichier de configuration contient un JSON invalide.
+func TestLoadConfigFileFromPathInvalidJSON(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "invalid.json")
+
+	if err := os.WriteFile(configPath, []byte(`{"default": `), 0600); err != nil {
+		t.Fatalf("failed to write invalid config: %v", err)
+	}
+
+	_, err := loadConfigFileFromPath(configPath)
+
+	if err == nil {
+		t.Fatal("expected error for invalid JSON, got nil")
+	}
+}
+
+// TestLoadDefaultProfileMissing vérifie qu'une erreur est retournée
+// lorsque le profil indiqué par "default" n'existe pas.
+func TestLoadDefaultProfileMissing(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "config.json")
+
+	configContent := `{
+		"default": "missing-profile",
+		"aliases": {
+			"minio-test": {
+				"url": "http://localhost:9000",
+				"access_key": "test-access",
+				"secret_key": "test-secret",
+				"region": "us-east-1"
+			}
+		}
+	}`
+
+	if err := os.WriteFile(configPath, []byte(configContent), 0600); err != nil {
+		t.Fatalf("failed to write test config: %v", err)
+	}
+
+	t.Setenv("MYCLI_CONFIG", configPath)
+
+	_, err := loadDefaultProfile()
+
+	if err == nil {
+		t.Fatal("expected error for missing default profile, got nil")
+	}
+
+	expected := `default profile "missing-profile" not found`
+	if err.Error() != expected {
+		t.Errorf("expected error %q, got %q", expected, err.Error())
+	}
+}
+
+// TestLoadInvalidFileUsesDefaults vérifie que Load retourne les valeurs
+// par défaut lorsque le fichier de configuration contient un JSON invalide.
+func TestLoadInvalidFileUsesDefaults(t *testing.T) {
+	tempDir := t.TempDir()
+	configPath := filepath.Join(tempDir, "invalid.json")
+
+	if err := os.WriteFile(configPath, []byte(`{"default": `), 0600); err != nil {
+		t.Fatalf("failed to write invalid config: %v", err)
+	}
+
+	t.Setenv("MYCLI_CONFIG", configPath)
+
+	if err := os.Unsetenv("MYCLI_URL"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_ACCESS_KEY"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_SECRET_KEY"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Unsetenv("MYCLI_REGION"); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := Load()
+
+	if cfg.URL != defaultURL {
+		t.Errorf("expected default URL %q, got %q", defaultURL, cfg.URL)
+	}
+
+	if cfg.AccessKey != "" {
+		t.Errorf("expected empty AccessKey, got %q", cfg.AccessKey)
+	}
+
+	if cfg.SecretKey != "" {
+		t.Errorf("expected empty SecretKey, got %q", cfg.SecretKey)
+	}
+
+	if cfg.Region != defaultRegion {
+		t.Errorf("expected default Region %q, got %q", defaultRegion, cfg.Region)
+	}
+}
+
+// vérifier que lookupEnv() privilégie MYCLI_* lorsqu'elle existe et utilise la variable MINIO_* correspondante lorsque MYCLI_* est absente.
+func TestLookupEnvPriority(t *testing.T) {
+	t.Setenv("MYCLI_URL", "http://mycli:9000")
+	t.Setenv("MINIO_ENDPOINT", "http://minio:9000")
+
+	value, ok := lookupEnv("MYCLI_URL", "MINIO_ENDPOINT")
+
+	if !ok {
+		t.Fatal("expected environment variable to be found")
+	}
+
+	if value != "http://mycli:9000" {
+		t.Errorf("expected MYCLI_URL to have priority, got %q", value)
+	}
+
+	t.Setenv("MYCLI_URL", "")
+	t.Setenv("MINIO_ENDPOINT", "http://minio:9000")
+
+	t.Setenv("MYCLI_URL", "")
+	if err := os.Unsetenv("MYCLI_URL"); err != nil {
+		t.Fatal(err)
+	}
+	value, ok = lookupEnv("MYCLI_URL", "MINIO_ENDPOINT")
+
+	if !ok {
+		t.Fatal("expected fallback environment variable to be found")
+	}
+
+	if value != "http://minio:9000" {
+		t.Errorf("expected MINIO_ENDPOINT as fallback, got %q", value)
+	}
+}
