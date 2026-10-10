@@ -144,17 +144,22 @@ flowchart LR
 
 Chaque commande accepte aussi `-h` ou `--help`.
 
-| Commande | Rôle |
-|---|---|
-| `mycli bucket list` | Lister les buckets |
-| `mycli bucket create <bucket>` | Créer un bucket |
-| `mycli bucket delete <bucket>` | Supprimer un bucket |
-| `mycli object upload --bucket <bucket> --file <chemin>` | Envoyer un fichier local dans un bucket |
-| `mycli object list --bucket <bucket>` | Lister les fichiers d'un bucket |
-| `mycli object download --bucket <bucket> --file <nom> --output <chemin>` | Télécharger un fichier |
-| `mycli object delete --bucket <bucket> --file <nom>` | Supprimer un fichier d'un bucket |
+| Commande | Rôle | Opération S3 | Requête HTTP |
+|---|---|---|---|
+| `mycli bucket list` | Lister les buckets | [ListBuckets](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html) | `GET /` |
+| `mycli bucket create <bucket>` | Créer un bucket | [CreateBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html) | `PUT /{bucket}` |
+| `mycli bucket delete <bucket>` | Supprimer un bucket | [DeleteBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html) | `DELETE /{bucket}` |
+| `mycli object upload --bucket <bucket> --file <chemin>` | Envoyer un fichier local dans un bucket | [PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html) | `PUT /{bucket}/{key}` |
+| `mycli object list --bucket <bucket>` | Lister les fichiers d'un bucket | [ListObjectsV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html) | `GET /{bucket}?list-type=2` |
+| `mycli object download --bucket <bucket> --file <nom> --output <chemin>` | Télécharger un fichier | [GetObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html) | `GET /{bucket}/{key}` |
+| `mycli object delete --bucket <bucket> --file <nom>` | Supprimer un fichier d'un bucket | [DeleteObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html) | `DELETE /{bucket}/{key}` |
 
 `mycli <commande> --help` affiche l'aide détaillée de chaque commande.
+
+Les requêtes utilisent l'adressage par chemin (*path-style*) : le nom du bucket
+est dans le chemin de l'URL (`http://localhost:9000/demo/rapport.txt`), et non
+dans le nom de domaine. C'est le mode qui fonctionne avec un serveur local comme
+MinIO.
 
 ### Correspondance avec les commandes du sujet
 
@@ -239,3 +244,25 @@ make test
 `make help` liste toutes les commandes disponibles. Le lint, la vérification
 des dépendances, la CI et le workflow de contribution sont décrits dans
 [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Références AWS
+
+`mycli` s'appuie sur la documentation de l'API Amazon S3 :
+
+- [Présentation de l'API Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html)
+- Opérations sur les buckets :
+  [ListBuckets](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html),
+  [CreateBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html),
+  [DeleteBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html)
+- Opérations sur les objets :
+  [PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html),
+  [ListObjectsV2](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html),
+  [GetObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html),
+  [DeleteObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html)
+- [Signature des requêtes (AWS Signature Version 4)](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
+- [Réponses d'erreur et codes d'erreur S3](https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html)
+- [Adressage par chemin et virtual-hosted](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html)
+- [Règles de nommage des buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)
+
+Les requêtes sont construites et signées par le SDK
+[aws-sdk-go-v2](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/s3).
