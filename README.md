@@ -158,18 +158,19 @@ Chaque commande accepte aussi `-h` ou `--help`.
 
 ### Correspondance avec les commandes du sujet
 
-| Commande du sujet | Commande `mycli` |
-|---|---|
-| `list-buckets` | `mycli bucket list` |
-| `create-bucket --bucket <nom>` | `mycli bucket create <nom>` |
-| `delete-bucket --bucket <nom>` | `mycli bucket delete <nom>` |
-| `upload-file --bucket <nom> --file <chemin>` | `mycli object upload --bucket <nom> --file <chemin>` |
-| `list-objects --bucket <nom>` | `mycli object list --bucket <nom>` |
-| `download-file --bucket <nom> --key <clé> --out <chemin>` | `mycli object download --bucket <nom> --file <clé> --output <chemin>` |
-| `delete-file --bucket <nom> --key <clé>` | `mycli object delete --bucket <nom> --file <clé>` |
+| Action demandée par le sujet | Nom cité dans le sujet | Commande `mycli` |
+|---|---|---|
+| Lister les buckets | `list-buckets` | `mycli bucket list` |
+| Créer un bucket | `create-bucket` | `mycli bucket create <bucket>` |
+| Supprimer un bucket | | `mycli bucket delete <bucket>` |
+| Téléverser un fichier dans un bucket | `upload-file` | `mycli object upload --bucket <bucket> --file <chemin>` |
+| Lister les objets d'un bucket | | `mycli object list --bucket <bucket>` |
+| Télécharger un fichier depuis un bucket | | `mycli object download --bucket <bucket> --file <nom> --output <chemin>` |
+| Supprimer un fichier d'un bucket | `delete-file` | `mycli object delete --bucket <bucket> --file <nom>` |
 
-Les commandes sont regroupées par ressource (`bucket`, `object`), sur le
-modèle de clients comme `aws s3` ou `mc`.
+Le sujet cite quatre noms en exemple. Les commandes de `mycli` sont regroupées
+par ressource (`bucket`, `object`), sur le modèle de clients comme `aws s3` ou
+`mc`.
 
 ### Exemple complet
 
