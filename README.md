@@ -11,7 +11,8 @@ liste, télécharge et supprime des fichiers.
 - Un serveur compatible S3 accessible, par exemple MinIO
 - Une clé d'accès et une clé secrète pour ce serveur
 
-Le binaire n'a besoin ni de Go ni du dépôt.
+Le binaire n'a besoin ni de Go ni du dépôt. L'installation par npm demande
+Node.js 18 ou supérieur.
 
 ### Pour développer
 
@@ -27,7 +28,25 @@ Le binaire n'a besoin ni de Go ni du dépôt.
 
 ## Installation
 
-`mycli` est un binaire autonome : il ne demande ni Go ni le dépôt. Chaque
+`mycli` est un binaire autonome : il ne demande ni Go ni le dépôt. Il
+s'installe avec npm ou en téléchargeant directement le binaire.
+
+### Avec npm
+
+Avec Node.js 18 ou supérieur :
+
+```bash
+npm install -g @derrocethebigorg/mycli
+```
+
+Le paquet [`@derrocethebigorg/mycli`](https://www.npmjs.com/package/@derrocethebigorg/mycli)
+télécharge le binaire de la release de même version qui correspond au système,
+puis vérifie sa somme de contrôle SHA-256 avec `checksums.txt`. Il est publié
+par la CI à chaque release, avec une attestation de provenance.
+
+### Depuis la release
+
+Chaque
 [release](https://github.com/ArthurDescourvieres/plateforme-mycli/releases)
 publie un binaire par système.
 
@@ -40,9 +59,7 @@ publie un binaire par système.
 | Windows (x86-64) | `mycli_windows_amd64.exe` |
 | Windows (ARM) | `mycli_windows_arm64.exe` |
 
-### Linux et macOS
-
-Remplacer `mycli_linux_amd64` par le fichier qui correspond à la machine :
+Sous Linux et macOS, remplacer `mycli_linux_amd64` par le fichier qui correspond à la machine :
 
 ```bash
 curl -L -o mycli https://github.com/ArthurDescourvieres/plateforme-mycli/releases/latest/download/mycli_linux_amd64
@@ -50,9 +67,7 @@ chmod +x mycli
 sudo mv mycli /usr/local/bin/mycli
 ```
 
-### Windows
-
-Dans PowerShell :
+Sous Windows, dans PowerShell :
 
 ```powershell
 Invoke-WebRequest -Uri https://github.com/ArthurDescourvieres/plateforme-mycli/releases/latest/download/mycli_windows_amd64.exe -OutFile mycli.exe
