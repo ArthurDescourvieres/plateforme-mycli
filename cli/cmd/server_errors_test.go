@@ -33,8 +33,8 @@ func TestServerErrors(t *testing.T) {
 	setupClient(t)
 
 	missingBucket := fmt.Sprintf("missing-bucket-%d", time.Now().UnixNano())
-	if err := runCommandExpectingError(t, "object", "list", "--bucket", missingBucket); err.Code != "NoSuchBucket" {
-		t.Errorf("object list on a missing bucket: expected NoSuchBucket, got %s", err.Code)
+	if err := runCommandExpectingError(t, "object", "list", "--bucket", missingBucket); err.Code != "NoSuchBucket" || err.HTTPStatus != 404 {
+		t.Errorf("object list on a missing bucket: expected NoSuchBucket (404), got %s (%d)", err.Code, err.HTTPStatus)
 	}
 
 	bucketName := fmt.Sprintf("errors-test-%d", time.Now().UnixNano())
@@ -44,7 +44,7 @@ func TestServerErrors(t *testing.T) {
 	})
 
 	output := filepath.Join(t.TempDir(), "absent.txt")
-	if err := runCommandExpectingError(t, "object", "download", "--bucket", bucketName, "--file", "absent.txt", "--output", output); err.Code != "NoSuchKey" {
-		t.Errorf("object download of a missing file: expected NoSuchKey, got %s", err.Code)
+	if err := runCommandExpectingError(t, "object", "download", "--bucket", bucketName, "--file", "absent.txt", "--output", output); err.Code != "NoSuchKey" || err.HTTPStatus != 404 {
+		t.Errorf("object download of a missing file: expected NoSuchKey (404), got %s (%d)", err.Code, err.HTTPStatus)
 	}
 }
