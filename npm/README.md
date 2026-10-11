@@ -6,7 +6,7 @@ MinIO ou Amazon S3.
 ## Installation
 
 ```bash
-npm install -g @derrocebigorg/mycli
+npm install -g @derrocethebigorg/mycli
 mycli --version
 ```
 
