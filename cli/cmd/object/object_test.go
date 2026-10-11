@@ -30,6 +30,15 @@ type fakeS3Client struct {
 	getBody   *fakeBody
 	getBucket string
 	getKey    string
+
+	listItems  []s3.ObjectItem
+	listErr    error
+	listBucket string
+	listPrefix string
+
+	deleteErr    error
+	deleteBucket string
+	deleteKey    string
 }
 
 func (f *fakeS3Client) CreateBucket(context.Context, string) error {
@@ -59,12 +68,16 @@ func (f *fakeS3Client) GetObject(_ context.Context, bucket string, key string) (
 	return f.getBody, nil
 }
 
-func (f *fakeS3Client) ListObjects(context.Context, string, string) ([]s3.ObjectItem, error) {
-	return nil, nil
+func (f *fakeS3Client) ListObjects(_ context.Context, bucket string, prefix string) ([]s3.ObjectItem, error) {
+	f.listBucket = bucket
+	f.listPrefix = prefix
+	return f.listItems, f.listErr
 }
 
-func (f *fakeS3Client) DeleteObject(context.Context, string, string) error {
-	return nil
+func (f *fakeS3Client) DeleteObject(_ context.Context, bucket string, key string) error {
+	f.deleteBucket = bucket
+	f.deleteKey = key
+	return f.deleteErr
 }
 
 func useFakeClient(t *testing.T, fake *fakeS3Client) {
