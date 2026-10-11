@@ -8,3 +8,7 @@ cli/cli
 
 # sortie de goreleaser
 dist/
+
+# paquet npm
+npm/vendor/
+*.tgz
